@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         };
-        
+
         simpleAdapter=new SimpleAdapter(this,datas,R.layout.user_layout,new String[]{"photo","name"},new int[]{R.id.photo, R.id.name});
         listView.setAdapter(simpleAdapter);//设置配置器
         simpleAdapter.setViewBinder(viewbinder);
