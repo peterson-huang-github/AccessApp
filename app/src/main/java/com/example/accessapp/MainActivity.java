@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
 
     private final static String TAG = "MyActivity";
+    // TODO: not show log message when DEBUG_MODE = false;
+    private final static boolean DEBUG_MODE = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,32 +88,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getUserData(){
-
-        Log.d(TAG, "Peter Test:0:getUserData() start");
-
         String url = "https://api.github.com/users";
         OkHttpHandler okHttpHandler= new OkHttpHandler();
         okHttpHandler.execute(url);
-
-        Log.d(TAG, "Peter Test:3:getUserData() finished");
-        // OkHttpClient client = new OkHttpClient();
-        /*
-        try {
-            String url = "https://api.github.com/users";
-            Request request = new Request.Builder()
-                    .url(url)
-                    .build();
-
-            Response response = client.newCall(request).execute();
-
-            // response.body().string();
-
-            // Log.d(TAG, "Peter Test:1:" + response.body().string());
-
-        } catch(Exception e){
-
-        }
-        */
     }
 
     public class OkHttpHandler extends AsyncTask {
@@ -121,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         protected void onPostExecute(Object s) {
             super.onPostExecute(s);
-            Log.d(TAG, "Peter Test:1:OKHttpHandler:onPostExecute():start");
-            Log.d(TAG, "Peter Test:2:OKHttpHandler:onPostExecute():object=" + s.toString());
 
             refreshUI(s.toString());
         }
@@ -144,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshUI(String rawJSON){
-        Log.d(TAG, "Peter Test:2.0:refreshUI() start");
         try {
             JSONArray array = new JSONArray(rawJSON);
 
@@ -152,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject object = array.getJSONObject(n);
                 String photoUrl = object.getString("avatar_url");
                 String loginName = object.getString("login");
-                Log.d(TAG, "Peter Test:2.1:loginName=" + loginName);
 
                 Map map=new HashMap();
                 map.put("photo", photoUrl);
@@ -178,25 +153,19 @@ public class MainActivity extends AppCompatActivity {
         };
 
         simpleAdapter=new SimpleAdapter(this,datas,R.layout.user_layout,new String[]{"photo","name"},new int[]{R.id.photo, R.id.name});
-        listView.setAdapter(simpleAdapter);//设置配置器
+        listView.setAdapter(simpleAdapter);
         simpleAdapter.setViewBinder(viewbinder);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
