@@ -1,11 +1,13 @@
 package com.example.accessapp;
 
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.squareup.picasso.Picasso;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,8 +15,11 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -145,10 +150,12 @@ public class MainActivity extends AppCompatActivity {
 
             for (int n = 0; n < array.length() && n < MAX_NUM_OF_USER_LIST; n++) {
                 JSONObject object = array.getJSONObject(n);
+                String photoUrl = object.getString("avatar_url");
                 String loginName = object.getString("login");
                 Log.d(TAG, "Peter Test:2.1:loginName=" + loginName);
 
                 Map map=new HashMap();
+                map.put("photo", photoUrl);
                 map.put("name",loginName);
                 datas.add(map);
             }
@@ -157,9 +164,22 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        // TODO: add photo field for each item.
-        simpleAdapter=new SimpleAdapter(this,datas,R.layout.user_layout,new String[]{"name"},new int[]{R.id.name});
+        SimpleAdapter.ViewBinder viewbinder = new SimpleAdapter.ViewBinder() {
+            public boolean setViewValue(View view, Object data, String textRepresentation) {
+                if(view instanceof ImageView && data != null){
+                    ImageView imageView = (ImageView) view;
+                    Picasso.get().load(data.toString()).into(imageView);
+                } else if(view instanceof TextView){
+                    TextView textView = (TextView) view;
+                    textView.setText(data.toString());
+                }
+                return true;
+            }
+        };
+        
+        simpleAdapter=new SimpleAdapter(this,datas,R.layout.user_layout,new String[]{"photo","name"},new int[]{R.id.photo, R.id.name});
         listView.setAdapter(simpleAdapter);//设置配置器
+        simpleAdapter.setViewBinder(viewbinder);
     }
 
     @Override
