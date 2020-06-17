@@ -41,11 +41,14 @@ public class MainActivity extends AppCompatActivity {
         mContext = this;
 
         // TODO: Use MVVM architecture
+        // Because final version is business secret, I do not provide it in github.
+        // Not use MVVM architecture if the amount of UI items is below five.
         listView= (ListView) findViewById(R.id.listview);
         getUserData();
     }
 
     private void initDatas() {
+        // for UI Test
         Map map1=new HashMap();
 
         map1.put("name","小蒙牛");
